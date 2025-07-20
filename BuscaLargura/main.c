@@ -6,6 +6,7 @@
 
 typedef struct g {
     int v;
+    int a;
     int **adj;
 } Grafo;
 
@@ -60,10 +61,11 @@ int main () {
 
 void inicializarGrafo (Grafo *G, int n) {
     G->v = n;
-    G->adj = (int**)malloc(sizeof(int*) * G->v);
+    G->a = 0;
+    G->adj = (int**)malloc(sizeof(int*) * G->v); // aloca as linhas
     for (int i = 0; i < n; i++) {
-        G->adj[i] = (int*)malloc(sizeof(int) * G->v);
-        for (int j = 0; j < n; j++) G->adj[i][j] = 0;
+        G->adj[i] = (int*)malloc(sizeof(int) * G->v); // para cada linha, aloca uma coluna
+        for (int j = 0; j < n; j++) G->adj[i][j] = 0; // inicializa com zero
     }
 }
 
@@ -72,10 +74,14 @@ void destruirGrafo (Grafo *G ) {
         free(G->adj[i]);
     free(G->adj);
     G->v = 0;
+    G->a = 0;
 }
 
 void inserirGrafo (Grafo *G, int i, int j) {
-    G->adj[i][j] = 1;
+    if (G->adj[i][j] == 0) { // insere e conta se for uma nova aresta
+        G->adj[i][j] = 1;
+        G->a++;
+    }
 }
 
 void bfs_visit (Grafo *g, int vis[], int dist[], int inicial) {
